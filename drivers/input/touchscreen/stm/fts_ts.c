@@ -116,6 +116,13 @@ static void fts_open_work(struct work_struct *work);
 #endif
 #endif
 
+#if defined(CONFIG_FB)
+static int touch_fb_notifier_callback(struct notifier_block *self,
+		unsigned long event, void *data);
+extern int input_enable_device(struct input_dev *dev);
+extern int input_disable_device(struct input_dev *dev);
+#endif
+
 static int fts_stop_device(struct fts_ts_info *info, bool lpmode);
 static int fts_start_device(struct fts_ts_info *info);
 
@@ -2816,7 +2823,7 @@ static void fts_set_input_prop(struct fts_ts_info *info, struct input_dev *dev, 
 
 static int fts_probe(struct i2c_client *client, const struct i2c_device_id *idp)
 {
-	int retval;
+	int ret, retval;
 	struct fts_ts_info *info = NULL;
 	int i = 0;
 
@@ -2875,6 +2882,16 @@ static int fts_probe(struct i2c_client *client, const struct i2c_device_id *idp)
 
 	mutex_init(&info->device_mutex);
 	mutex_init(&info->i2c_mutex);
+
+#ifdef CONFIG_FB
+	info->fb_notif.notifier_call = touch_fb_notifier_callback;
+	ret = fb_register_client(&info->fb_notif);
+	if (ret < 0) {
+		input_err(true, &info->client->dev, "%s: Failed to register fb client\n",
+			__func__);
+		goto err_fb_client;
+	}
+#endif
 
 	retval = fts_init(info);
 	if (retval) {
@@ -3058,6 +3075,11 @@ err_enable_irq:
 		input_unregister_device(info->input_dev_pad);
 		info->input_dev_pad = NULL;
 	}
+#ifdef CONFIG_FB
+	fb_unregister_client(&info->fb_notif);
+
+err_fb_client:
+#endif
 err_register_input_pad:
 	input_unregister_device(info->input_dev);
 	info->input_dev = NULL;
@@ -3101,6 +3123,13 @@ static int fts_remove(struct i2c_client *client)
 #endif
 
 	input_info(true, &info->client->dev, "%s\n", __func__);
+
+#if defined(CONFIG_FB)
+	if (fb_unregister_client(&info->fb_notif))
+		input_info(true, &info->client->dev,
+			"%s: Error occured while unregistering fb_notifier.\n", __func__);
+#endif
+
 	info->shutdown_is_on_going = true;
 
 	disable_irq_nosync(info->client->irq);
@@ -3890,6 +3919,27 @@ static int fts_resume(struct i2c_client *client)
 	input_dbg(true, &info->client->dev, "%s\n", __func__);
 
 	fts_start_device(info);
+
+	return 0;
+}
+#endif
+
+#if defined(CONFIG_FB)
+static int touch_fb_notifier_callback(struct notifier_block *self,
+		unsigned long event, void *data)
+{
+	struct fts_ts_info *info =
+		container_of(self, struct fts_ts_info, fb_notif);
+	struct fb_event *ev = (struct fb_event *)data;
+
+	if (ev && ev->data && event == FB_EVENT_BLANK) {
+		int *blank = (int *)ev->data;
+
+		if (*blank == FB_BLANK_UNBLANK)
+			input_enable_device(info->input_dev);
+		else
+			input_disable_device(info->input_dev);
+	}
 
 	return 0;
 }
