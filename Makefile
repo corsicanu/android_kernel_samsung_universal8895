@@ -662,7 +662,7 @@ KBUILD_CFLAGS	+= $(call cc-disable-warning, format-truncation)
 KBUILD_CFLAGS	+= $(call cc-disable-warning, format-overflow)
 KBUILD_CFLAGS	+= $(call cc-disable-warning, int-in-bool-context)
 
-KBUILD_CFLAGS   += -O2 -mcpu=exynos-m1.cortex-a53+crc+crypto
+KBUILD_CFLAGS   += -O2
  
 # Disallow introduction of unaligned stores
 KBUILD_CFLAGS	+= $(call cc-option,--param=store-merging-allow-unaligned=0)
