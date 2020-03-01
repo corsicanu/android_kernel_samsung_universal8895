@@ -25,6 +25,7 @@ static enum power_supply_property max77865_fuelgauge_props[] = {
 bool max77865_fg_fuelalert_init(struct max77865_fuelgauge_data *fuelgauge,
 				int soc);
 
+#if defined(CONFIG_OIS_USE_RUMBA_S4)
 static void max77865_fg_adaptation_wa(struct max77865_fuelgauge_data *fuelgauge)
 {
 	u32 rcomp0;
@@ -84,6 +85,7 @@ re_calculation:
 	
 	return;
 }
+#endif
 
 #if !defined(CONFIG_SEC_FACTORY)
 static void max77865_fg_periodic_read(struct max77865_fuelgauge_data *fuelgauge)
@@ -124,7 +126,9 @@ static void max77865_fg_periodic_read(struct max77865_fuelgauge_data *fuelgauge)
 
 	pr_info("[FG] %s\n", str);
 
+#if defined(CONFIG_OIS_USE_RUMBA_S4)
 	max77865_fg_adaptation_wa(fuelgauge);
+#endif
 
 	kfree(str);
 }
@@ -2201,6 +2205,7 @@ static int max77865_fuelgauge_parse_dt(struct max77865_fuelgauge_data *fuelgauge
 			pr_err("%s error reading capacity_calculation_type %d\n",
 					__func__, ret);
 
+#if defined(CONFIG_OIS_USE_RUMBA_S4)
 		ret = of_property_read_u32(np, "fuelgauge,rcomp0",
 					   &fuelgauge->battery_data->rcomp0);
 		if (ret < 0)
@@ -2230,6 +2235,7 @@ static int max77865_fuelgauge_parse_dt(struct max77865_fuelgauge_data *fuelgauge
 		if (ret < 0)
 			pr_err("%s error reading fullcapnom %d\n",
 					__func__, ret);
+#endif
 
 		fuelgauge->auto_discharge_en = of_property_read_bool(np,
 				"fuelgauge,auto_discharge_en");

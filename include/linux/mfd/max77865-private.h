@@ -115,13 +115,17 @@ enum max77865_fuelgauge_reg {
 	ICHGTERM_REG                                 = 0x1E,
 	REMCAP_AV_REG                                = 0x1F,
 	FULLCAP_NOM_REG                              = 0x23,
+#ifdef CONFIG_OIS_USE_RUMBA_S4
 	LEARN_CFG_REG                                = 0x28,
+#endif
 	FILTER_CFG_REG                               = 0x29,
 	MISCCFG_REG                                  = 0x2B,
 	QRTABLE20_REG                                = 0x32,
 	FULLCAP_REP_REG                              = 0x35,
 	RCOMP_REG                                    = 0x38,
+#ifdef CONFIG_OIS_USE_RUMBA_S4
 	TEMPCO_REG                                   = 0x39,
+#endif
 	VEMPTY_REG				     = 0x3A,
 	FSTAT_REG                                    = 0x3D,
 	DISCHARGE_THRESHOLD_REG			     = 0x40,
