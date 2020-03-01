@@ -105,12 +105,17 @@ struct battery_data_t {
 	u32 QResidual30;
 	u32 filtercfg;
 	u32 filtercfg_low_temp;
+#if defined(CONFIG_OIS_USE_RUMBA_S6)
+	u32 TempCo;
+#endif
 	u32 Capacity;
+#if defined(CONFIG_OIS_USE_RUMBA_S4)
 	u32 rcomp0;
 	u32 tempco;
 	u32 dPacc;
 	u32 dQacc;
 	u32 fullcapnom;
+#endif
 	u8	*type_str;
 	u32 ichgterm;
 	u32 misccfg;
