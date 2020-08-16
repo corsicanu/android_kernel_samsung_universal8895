@@ -416,7 +416,7 @@ static int conn_gadget_create_bulk_endpoints(struct conn_gadget_dev *dev,
 	struct usb_ep *ep;
 	int i;
 
-	pr_debug("create_bulk_endpoints dev: %p\n", dev);
+	pr_debug("create_bulk_endpoints dev: %pK\n", dev);
 
 	ep = usb_ep_autoconfig(cdev->gadget, in_desc);
 	if (!ep) {
@@ -875,7 +875,7 @@ conn_gadget_function_bind(struct usb_configuration *c, struct usb_function *f)
 	int			ret;
 
 	dev->cdev = cdev;
-	printk(KERN_ERR "conn_gadget_function_bind dev: %p\n", dev);
+	printk(KERN_ERR "conn_gadget_function_bind dev: %pK\n", dev);
 
 	/* allocate interface ID(s) */
 	id = usb_interface_id(c, f);
@@ -1013,7 +1013,7 @@ static void conn_gadget_function_disable(struct usb_function *f)
 	struct conn_gadget_dev	*dev = func_to_conn_gadget(f);
 	struct usb_composite_dev	*cdev = dev->cdev;
 
-	printk(KERN_ERR "conn_gadget_function_disable cdev %p\n", cdev);
+	printk(KERN_ERR "conn_gadget_function_disable cdev %pK\n", cdev);
 	dev->memorized = dev->online;
 	dev->online = 0;
 	dev->error = 1;
