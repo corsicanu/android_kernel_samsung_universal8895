@@ -72,34 +72,6 @@ static ssize_t show_time_in_state(struct cpufreq_policy *policy, char *buf)
 	return len;
 }
 
-void acct_update_power(struct task_struct *task, cputime_t cputime) {
-	struct cpufreq_power_stats *powerstats;
-	struct cpufreq_stats *stats;
-	struct cpufreq_policy *policy;
-	unsigned int cpu_num, curr;
-
-	if (!task)
-		return;
-
-	cpu_num = task_cpu(task);
-
-	policy = cpufreq_cpu_get(cpu_num);
-
-	if (WARN_ON_ONCE(!policy))
-		return;
-
-	powerstats = per_cpu(cpufreq_power_stats, cpu_num);
-	stats = policy->stats;
-	if (!powerstats || !stats)
-		return;
-
-	curr = powerstats->curr[stats->last_index];
-	task->cpu_power += curr * cputime_to_usecs(cputime);
-	if (task->cpu_power != ULLONG_MAX)
-		task->cpu_power += curr * cputime_to_usecs(cputime);
-}
-EXPORT_SYMBOL_GPL(acct_update_power);
-
 static ssize_t show_current_in_state(struct kobject *kobj,
 		struct kobj_attribute *attr, char *buf)
 {
