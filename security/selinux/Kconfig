@@ -7,12 +7,6 @@ config SECURITY_SELINUX
 	  This selects NSA Security-Enhanced Linux (SELinux).
 	  You will also need a policy configuration and a labeled filesystem.
 	  If you are unsure how to answer this question, answer N.
-	  
-config ALWAYS_PERMISSIVE
-	bool "NSA SELinux Permissive"
-	default n
-	help
-	  This forces the kernel to run in permissive mode.
 
 config SECURITY_SELINUX_BOOTPARAM
 	bool "NSA SELinux boot parameter"
@@ -70,6 +64,20 @@ config SECURITY_SELINUX_DEVELOP
 	  unless you specify enforcing=1 on the kernel command line.  You
 	  can interactively toggle the kernel between enforcing mode and
 	  permissive mode (if permitted by the policy) via /selinux/enforce.
+
+config SECURITY_SELINUX_ALWAYS_ENFORCE
+	bool "NSA SELinux Always Enforcing"
+	depends on SECURITY_SELINUX_DEVELOP
+	default n
+	help
+	  This option will prevent anything from setting SELinux to permissive.
+
+config SECURITY_SELINUX_ALWAYS_PERMISSIVE
+	bool "NSA SELinux Always Permissive"
+	depends on SECURITY_SELINUX_DEVELOP
+	default n
+	help
+	  This option will prevent anything from setting SELinux to enforcing.
 
 config SECURITY_SELINUX_AVC_STATS
 	bool "NSA SELinux AVC Statistics"

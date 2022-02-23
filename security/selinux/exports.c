@@ -20,7 +20,7 @@
 bool selinux_is_enabled(void)
 {
 // [ SEC_SELINUX_PORTING_COMMON
-#ifdef CONFIG_ALWAYS_ENFORCE
+#ifdef CONFIG_SECURITY_SELINUX_ALWAYS_ENFORCE
 	return true;
 #else
 	return selinux_enabled;
@@ -32,8 +32,10 @@ EXPORT_SYMBOL_GPL(selinux_is_enabled);
 bool selinux_is_enforcing(void)
 {
 // [ SEC_SELINUX_PORTING_COMMON
-#ifdef CONFIG_ALWAYS_ENFORCE
+#ifdef CONFIG_SECURITY_SELINUX_ALWAYS_ENFORCE
 	return true;
+#elif defined(CONFIG_SECURITY_SELINUX_ALWAYS_PERMISSIVE)
+	return false;
 #else
 	return selinux_enforcing;
 #endif

@@ -74,6 +74,7 @@
 #include <linux/binfmts.h>
 #include <linux/context_tracking.h>
 #include <linux/compiler.h>
+#include <linux/cpufreq_times.h>
 #include <linux/exynos-ss.h>
 
 #include <linux/sched/sysctl.h>
