@@ -7,6 +7,7 @@
 #include <linux/hashtable.h>
 #include <linux/init.h>
 #include <linux/proc_fs.h>
+#include <linux/rtmutex.h>
 #include <linux/sched.h>
 #include <linux/seq_file.h>
 #include <linux/slab.h>
@@ -173,7 +174,7 @@ static int proc_uid_base_readdir(struct file *file, struct dir_context *ctx)
 		return 0;
 
 	for (u = uid_base_stuff + (ctx->pos - 2);
-	     u <= uid_base_stuff + nents - 1; u++) {
+	     u < uid_base_stuff + nents; u++) {
 		if (!proc_fill_cache(file, ctx, u->name, u->len,
 				     proc_uident_instantiate, NULL, u))
 			break;
@@ -285,6 +286,8 @@ static const struct inode_operations proc_uid_inode_operations = {
 int __init proc_uid_init(void)
 {
 	proc_uid = proc_mkdir("uid", NULL);
+	if (!proc_uid)
+		return -ENOMEM;
 	proc_uid->proc_iops = &proc_uid_inode_operations;
 	proc_uid->proc_fops = &proc_uid_operations;
 
