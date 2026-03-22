@@ -510,6 +510,12 @@ config AXP20X_POWER
 
 source "drivers/power/reset/Kconfig"
 
+config HADES_CHARGING_CONTROL
+	bool "HadesKernel Charging Control"
+	default y
+	help
+	  Exposes sysfs interface for bypass charging and charge limit control.
+
 endif # POWER_SUPPLY
 
 source "drivers/power/avs/Kconfig"

@@ -409,4 +409,10 @@ config QCOM_SPMI_TEMP_ALARM
 	  real time die temperature if an ADC is present or an estimate of the
 	  temperature based upon the over temperature stage value.
 
+config SAMSUNG_THERMAL_TUNER
+	bool "Samsung Exynos 8895 Thermal Tuner"
+	default y
+	help
+	  Exposes sysfs interface for thermal management on Exynos 8895 devices.
+
 endif

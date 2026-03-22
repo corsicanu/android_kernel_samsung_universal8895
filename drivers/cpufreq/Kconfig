@@ -396,5 +396,11 @@ config QORIQ_CPUFREQ
 	  This adds the CPUFreq driver support for Freescale QorIQ SoCs
 	  which are capable of changing the CPU's frequency dynamically.
 
+config HADES_GOVERNOR_TUNER
+	bool "HadesKernel CPU and GPU Governor Tuner"
+	default y
+	help
+	  Exposes sysfs interface for CPU and GPU frequency and governor control.
+
 endif
 endmenu
